@@ -1,9 +1,16 @@
-
-
 var citiesList = [];
 var id = "2fab4dbff3c744e6452b92d0a78ccab0";
 
+function displayCityWeather() {
+    var thisCity = $(this).attr("data-city");
 
+    $(".cityToday").empty();
+    getCurrentWeather(thisCity, id);
+
+    $(".forecast").empty();
+    getForecast(thisCity, id);
+    
+}
 
 
 function createcitiesList(){
@@ -84,5 +91,31 @@ function getCurrentWeather(thisCity, id) {
     })
 
 }
+
+$("form").on("submit", function(event) {
+    event.preventDefault();
+    console.log("i work")
+    var newCity = $("#citySearchInput").val().trim();
+    citiesList.push(newCity);
+    createcitiesList();
+    storeCities();
+    $("#citySearchInput").val("");
+})
+
+
+$(".citiesList").on("click", ".cityButton", displayCityWeather);
+
+function getUVI(id, cityLat, cityLong) {
+    var uvURL = `https://api.openweathermap.org/data/2.5/uvi?lat=${cityLat}&lon=${cityLong}&appid=${id}`;
+
+    $.ajax({
+        url: uvURL,
+        method: "GET"
+    }).then(function (data) {
+        $(".cityToday").append(`<p>UV Index: <span class="badge badge-danger p-2">${data.value}</span></p>`);
+    })
+}
+
+
 
 
